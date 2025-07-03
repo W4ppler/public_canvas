@@ -1,0 +1,45 @@
+services:
+  public_canvas_db:
+    image: postgres:15-alpine
+    container_name: public_canvas_db
+    env_file:
+      - .env
+    volumes:
+      - ./postgres_data/:/var/lib/postgresql/data/
+    networks:
+      - public_canvas_network
+
+  public_canvas_redis:
+    image: redis:7-alpine
+    container_name: public_canvas_redis
+    networks:
+      - public_canvas_network
+
+  public_canvas_backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: public_canvas_backend
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      # - static_volume:/app/static # Will add later for static files
+    depends_on:
+      - public_canvas_db
+      - public_canvas_redis
+    networks:
+      - public_canvas_network
+    # Override the CMD in Dockerfile for local development.
+    # This runs migrations and then the Django development server.
+    # Make sure `your_project_name` is replaced with the actual project name later.
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+# volumes:
+  # static_volume: # Will define named volume for Django static files later
+
+networks:
+  public_canvas_network:
+    driver: bridge

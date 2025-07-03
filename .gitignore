@@ -1,0 +1,19 @@
+# Python-specific ignores
+*.pyc
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+*.env
+
+# Docker-specific ignores
+# Ignore any local volume mount points or temporary Docker files
+# If you bind-mount a local directory for postgres data
+postgres_data/
+
+# PyCharm-specific ignores
+.idea/ # PyCharm project configuration files (usually OK to ignore, unless collaborating)
+
+# Operating System ignores
+Thumbs.db # Windows
