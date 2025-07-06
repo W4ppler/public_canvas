@@ -1,7 +1,7 @@
 import os
-from environs import Env # You'll install this soon
+from environs import Env
 env = Env()
-env.read_env() # read .env file, if it exists
+env.read_env()
 
 """
 Django settings for public_canvas project.
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # third party
     'rest_framework',
     # custom
+    'canvas_app',
 ]
 
 MIDDLEWARE = [
