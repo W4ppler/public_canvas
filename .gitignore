@@ -17,3 +17,4 @@ postgres_data/
 
 # Operating System ignores
 Thumbs.db # Windows
+/.idea/
