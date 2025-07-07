@@ -1,5 +1,6 @@
 import os
 from environs import Env
+
 env = Env()
 env.read_env()
 
@@ -20,7 +21,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -31,7 +31,6 @@ SECRET_KEY = env.str("DJANGO_SECRET_KEY")
 DEBUG = env.bool("DJANGO_DEBUG", default=False)
 
 ALLOWED_HOSTS = ["*"]
-
 
 # Application definition
 
@@ -44,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # third party
     'rest_framework',
+    'channels',
     # custom
     'canvas_app',
 ]
@@ -77,7 +77,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'public_canvas.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -85,13 +84,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': env.str("POSTGRES_DB"),
-	'USER': env.str("POSTGRES_USER"),
-	'PASSWORD': env.str("POSTGRES_PASSWORD"),
-	'HOST': env.str("POSTGRES_HOST"),
-	'POST': env.str("POSTGRES_PORT"),
+        'USER': env.str("POSTGRES_USER"),
+        'PASSWORD': env.str("POSTGRES_PASSWORD"),
+        'HOST': env.str("POSTGRES_HOST"),
+        'POST': env.str("POSTGRES_PORT"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -111,7 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -123,7 +120,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
@@ -133,3 +129,20 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom
+ASGI_APPLICATION = 'public_canvas.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [
+                {
+                    'address': env.str("REDIS_HOST"),
+                    'password': env.str("REDIS_PASSWORD")
+                }
+            ],
+        },
+    }
+}

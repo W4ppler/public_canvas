@@ -16,6 +16,7 @@ services:
     container_name: public_canvas_redis
     networks:
       - public_canvas_network
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
 
   public_canvas_backend:
     build:
