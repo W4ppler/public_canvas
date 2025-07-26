@@ -21,27 +21,32 @@ services:
   public_canvas_backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
     container_name: public_canvas_backend
     env_file:
       - .env
     ports:
-      - "8000:8000"
+      - "2702:2702"
     volumes:
       - ./backend:/app
-      # - static_volume:/app/static # Will add later for static files
     depends_on:
       - public_canvas_db
       - public_canvas_redis
     networks:
       - public_canvas_network
-    # Override the CMD in Dockerfile for local development.
-    # This runs migrations and then the Django development server.
-    # Make sure `your_project_name` is replaced with the actual project name later.
-    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && daphne -b 0.0.0.0 -p 2702 public_canvas.asgi:application" #  python manage.py runserver 0.0.0.0:2702
 
-# volumes:
-  # static_volume: # Will define named volume for Django static files later
+  public_canvas_frontend:
+    build:
+      context: ./frontend
+    container_name: public_canvas_frontend
+    env_file:
+      - .env
+    ports:
+      - "80:80"
+    depends_on:
+      - public_canvas_backend
+    networks:
+      - public_canvas_network
 
 networks:
   public_canvas_network:
