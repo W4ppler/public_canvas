@@ -1,2 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+
+@font-face {
+  font-family: 'Cherry Bomb One';
+  src: url('assets/fonts/CherryBombOne-Regular.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-sans: "Cherry Bomb One", cursive;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
