@@ -4,7 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-toolbar',
   imports: [],
   templateUrl: './toolbar.html',
-  styleUrl: './toolbar.css'
 })
 export class Toolbar {
 

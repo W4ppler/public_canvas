@@ -1,13 +1,13 @@
-<div class="min-h-screen bg-gray-100">
+<div class="min-h-screen bg-slate-950 text-gray-100">
   <app-header></app-header>
 
   <div class="flex">
-    <app-sidebar></app-sidebar>
-
-    <main class="flex-1 p-4">
+    <app-sidebar-left></app-sidebar-left>
+    <main class="flex p-4 pb-20">
       <app-canvas></app-canvas>
     </main>
-
-    <app-toolbar></app-toolbar>
+    <app-sidebar-right></app-sidebar-right>
   </div>
+
+  <app-toolbar></app-toolbar>
 </div>
