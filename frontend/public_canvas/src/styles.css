@@ -2,16 +2,27 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: 'Cherry Bomb One';
-  src: url('assets/fonts/CherryBombOne-Regular.ttf') format('ttf');
-  font-weight: normal;
-  font-style: normal;
+  font-family: 'CherryBombOne';
+  src: url('./assets/fonts/CherryBombOne-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DynaPuff';
+  src: url('./assets/fonts/DynaPuff-VariableFont_wdth,wght.ttf') format('truetype');
   font-display: swap;
 }
 
 @theme {
-  --font-sans: "Cherry Bomb One", cursive;
+  --font-dyna: "DynaPuff";
+  --font-cherry: "CherryBombOne";
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
