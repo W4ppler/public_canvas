@@ -1,5 +1,14 @@
 <div class="h-screen w-screen justify-center items-center flex">
-  <div class="w-4/5 h-4/5 bg-white ">
-    d
-  </div>
+  @if (isLoaded){
+    <canvas
+      #pixelCanvas
+      width="1000"
+      height="500"
+      class="shadow-lg w-[1000px] h-[500px] "
+    ></canvas>
+  } @else {
+    <div class="text-4xl">
+      Canvas is loading...
+    </div>
+  }
 </div>
