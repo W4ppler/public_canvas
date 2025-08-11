@@ -2,6 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {Component, ViewChild, ElementRef, inject, AfterViewInit, ChangeDetectorRef} from '@angular/core';
 import {Pixel} from './pixel';
 import {firstValueFrom} from 'rxjs';
+import {webSocket} from 'rxjs/webSocket';
 
 @Component({
   selector: 'app-canvas',
@@ -9,56 +10,72 @@ import {firstValueFrom} from 'rxjs';
   templateUrl: './canvas.html',
 })
 export class Canvas implements AfterViewInit {
-  @ViewChild('pixelCanvas') private canvas!: ElementRef<HTMLCanvasElement>;
-  private ctx!: CanvasRenderingContext2D;
-  private http = inject(HttpClient);
-  private canvasData: Pixel[] = [];
-  private cdr = inject(ChangeDetectorRef);
   isLoaded = false;
-  isDrawing = false;
+
+  @ViewChild('pixelCanvas') private canvasElement!: ElementRef<HTMLCanvasElement>;
+  private canvas!: HTMLCanvasElement;
+  private http = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
+  private isDrawing = false;
+  private ctx!: CanvasRenderingContext2D;
+
+  // websockets
+  private wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+  private wsUrl = `${this.wsProtocol}://${window.location.host}/ws/canvas/`;
+  private socket$ = webSocket(this.wsUrl);
 
 
   async ngAfterViewInit() {
-    const data = await firstValueFrom(this.http.get('/api/canvas', {headers: {'Accept': 'application/json'}}))
-    this.canvasData = data as Pixel[];
+    const initialData = await firstValueFrom(this.http.get('/api/canvas/', {headers: {'Accept': 'application/json'}})) as Pixel[];
 
-    console.log('Canvas initialized with data:', this.canvasData);
     this.isLoaded = true;
     this.cdr.detectChanges();
+    this.canvas = this.canvasElement.nativeElement;
+    this.ctx = this.canvas.getContext('2d')!;
 
-    const canvas = this.canvas.nativeElement;
-    this.ctx = canvas.getContext('2d')!;
+    for (const pixel of initialData) {
+      this.drawPixel(pixel);
+    }
+    this.socket$.subscribe({
+      next: (message) => {
+        this.drawPixel(message as Pixel);
+      },
+      error: (err) => console.error('WebSocket error:', err),
+      complete: () => console.log('WebSocket connection closed')
+    });
 
-    this.drawPixelsInitially();
 
-    canvas.addEventListener('click', (event: MouseEvent) => {
+    this.canvas.addEventListener('mousedown', (event: MouseEvent) => {
       this.isDrawing = true;
     });
 
-    canvas.addEventListener('mousemove', (event: MouseEvent) => {
-      if(this.isDrawing) {
-        const x = Math.floor(event.offsetX);
-        const y = Math.floor(event.offsetY);
+
+    this.canvas.addEventListener('mousemove', (event: MouseEvent) => {
+      if (this.isDrawing) {
+        const x = Math.floor(event.offsetX*0.1);
+        const y = Math.floor(event.offsetY*0.1);
         let colour = '#ff0000';
 
-        const pixel = this.canvasData.find(p => p.x === x && p.y === y);
-        if (pixel) {
-          pixel.colour = colour;
-          this.ctx.fillStyle = colour;
-          this.ctx.fillRect(x, y, 5, 5);
-        }
+        this.drawPixel(new Pixel(x, y, colour));
+
+        this.socket$.next({
+          type: 'draw',
+          x: x,
+          y: y,
+          colour: colour,
+        })
       }
     });
 
-    canvas.addEventListener('mouseup', () => {
+
+    this.canvas.addEventListener('mouseup', () => {
       this.isDrawing = false;
     });
   }
 
-  private drawPixelsInitially() {
-    this.canvasData.forEach(pixel => {
-      this.ctx.fillStyle = pixel.colour;
-      this.ctx.fillRect(pixel.x, pixel.y, 1, 1);
-    });
+  private drawPixel(pixel: Pixel) {
+    this.ctx.fillStyle = pixel.colour;
+    this.ctx.fillRect(pixel.x, pixel.y, 1, 1);
+
   }
 }

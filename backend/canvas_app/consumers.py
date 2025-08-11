@@ -16,19 +16,21 @@ class CanvasConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        x = data['x']
-        y = data['y']
-        colour = data.get('colour')
 
-        await self.update_pixel(x, y, colour)
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'canvas_update',
-                'x': x,
-                'y': y,
-                'colour': colour
-            }
+        if(data['type'] == 'draw'):
+            x = data['x']
+            y = data['y']
+            colour = data.get('colour')
+
+            await self.update_pixel(x, y, colour)
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'canvas_update',
+                    'x': x,
+                    'y': y,
+                    'colour': colour
+                }
         )
 
     async def canvas_update(self, event):
