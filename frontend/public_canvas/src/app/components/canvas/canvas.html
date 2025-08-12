@@ -2,9 +2,10 @@
   @if (isLoaded){
     <canvas
       #pixelCanvas
-      width="100"
-      height="50"
-      class="shadow-lg w-[1000px] h-[500px] "
+      width="1000"
+      height="500"
+      [style.width.px]="canvasWidth"
+      [style.height.px]="canvasHeight"
     ></canvas>
   } @else {
     <div class="text-4xl">
