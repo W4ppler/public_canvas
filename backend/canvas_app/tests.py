@@ -2,7 +2,7 @@ import json
 from django.test import TestCase
 from channels.testing import WebsocketCommunicator
 from .consumers import CanvasConsumer
-from .models import CanvasModel
+from .models import Pixels
 
 
 class CanvasConsumerTest(TestCase):
@@ -23,7 +23,7 @@ class CanvasConsumerTest(TestCase):
         response = await communicator.receive_from()
         self.assertEqual(json.loads(response), test_message)
 
-        pixel_exists = await CanvasModel.objects.filter(x=10, y=20, colour='#123456').aexists()
+        pixel_exists = await Pixels.objects.filter(x=10, y=20, colour='#123456').aexists()
         self.assertTrue(pixel_exists)
 
         await communicator.disconnect()

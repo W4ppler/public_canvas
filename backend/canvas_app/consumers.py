@@ -1,7 +1,7 @@
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-from .models import CanvasModel
+from .models import Pixels
 
 
 class CanvasConsumer(AsyncWebsocketConsumer):
@@ -44,7 +44,7 @@ class CanvasConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def update_pixel(self, x, y, colour):
-        CanvasModel.objects.update_or_create(
+        Pixels.objects.update_or_create(
             x=x, y=y,
             defaults={'colour': colour}
         )

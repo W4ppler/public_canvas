@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import CanvasModel
+from .models import Pixels
 
 class CanvasModelSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CanvasModel
+        model = Pixels
         fields = "__all__"

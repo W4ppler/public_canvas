@@ -1,5 +1,15 @@
 import {HttpClient} from '@angular/common/http';
-import {Component, ViewChild, ElementRef, inject, AfterViewInit, ChangeDetectorRef, DOCUMENT} from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  ElementRef,
+  inject,
+  AfterViewInit,
+  ChangeDetectorRef,
+  DOCUMENT,
+  Input,
+  WritableSignal
+} from '@angular/core';
 import {Pixel} from './pixel';
 import {firstValueFrom} from 'rxjs';
 import {webSocket} from 'rxjs/webSocket';
@@ -10,6 +20,9 @@ import {webSocket} from 'rxjs/webSocket';
   templateUrl: './canvas.html',
 })
 export class Canvas implements AfterViewInit {
+  @Input() public colour!: WritableSignal<string>;
+  @Input() public thiccness!: WritableSignal<number>;
+
   isLoaded = false;
   canvasWidth = 1000;
   canvasHeight = 500;
@@ -54,6 +67,8 @@ export class Canvas implements AfterViewInit {
 
     this.canvas.addEventListener('mousedown', (event: MouseEvent) => {
       this.isDrawing = true;
+
+      // alert(this.thiccness() + this.colour());
     });
 
 

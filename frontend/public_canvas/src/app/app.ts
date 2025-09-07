@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, WritableSignal, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {Header} from './components/header/header';
 import {SidebarLeft} from './components/sidebar-left/sidebar-left';
@@ -13,6 +13,9 @@ import {Toolbar} from './components/toolbar/toolbar';
   styleUrl: './app.css'
 })
 export class App {
+  colour = signal('#ffffff');
+  thiccness = signal(5);
+
   protected readonly title = signal('public_canvas');
 }
 

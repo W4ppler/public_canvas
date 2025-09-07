@@ -2,9 +2,9 @@
   <app-header></app-header>
 
   <div>
-    <app-sidebar-left></app-sidebar-left>
+    <app-sidebar-left [colour]="colour" [thiccness]="thiccness"></app-sidebar-left>
     <main>
-      <app-canvas></app-canvas>
+      <app-canvas [colour]="colour" [thiccness]="thiccness"></app-canvas>
     </main>
     <app-sidebar-right></app-sidebar-right>
   </div>

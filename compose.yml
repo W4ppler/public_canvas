@@ -34,6 +34,7 @@ services:
     networks:
       - public_canvas_network
     command: sh -c "python manage.py makemigrations && python manage.py migrate && daphne -b 0.0.0.0 -p 2702 public_canvas.asgi:application" #  python manage.py runserver 0.0.0.0:2702
+    # command: sleep infinity
 
   public_canvas_frontend:
     build:
