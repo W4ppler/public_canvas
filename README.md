@@ -31,6 +31,8 @@ docker compose up -d --build
 ```
 You can use docker compose down in the same directory to stop the containers
 
+### .env File
+There is an example .env file in the root directory. You should change the values. The default values should work fine for local usage.
 
 ## Todo
 - Optimize the websocket connection, currently the room is overcapacitated pretty quicly
