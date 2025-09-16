@@ -17,19 +17,23 @@ class CanvasConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         data = json.loads(text_data)
 
+        print(data)
+
         if(data['type'] == 'draw'):
             x = data['x']
             y = data['y']
             colour = data.get('colour')
+            thiccness = data.get('thiccness')
 
-            await self.update_pixel(x, y, colour)
+            await self.update_pixel(x, y, colour, thiccness)
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     'type': 'canvas_update',
                     'x': x,
                     'y': y,
-                    'colour': colour
+                    'colour': colour,
+                    'thiccness': thiccness,
                 }
         )
 
@@ -37,14 +41,20 @@ class CanvasConsumer(AsyncWebsocketConsumer):
         message = {
             'x': event['x'],
             'y': event['y'],
-            'colour': event['colour']
+            'colour': event['colour'],
+            'thiccness': event['thiccness'],
         }
 
         await self.send(text_data=json.dumps(message))
 
     @database_sync_to_async
-    def update_pixel(self, x, y, colour):
-        Pixels.objects.update_or_create(
-            x=x, y=y,
-            defaults={'colour': colour}
+    def update_pixel(self, x, y, colour, thiccness):
+        coords = [(x + k, y + i) for k in range(thiccness) for i in range(thiccness)]
+        existing = Pixels.objects.filter(
+            x__in=[c[0] for c in coords],
+            y__in=[c[1] for c in coords]
         )
+        for pixel in existing:
+            pixel.colour = colour
+        if existing:
+            Pixels.objects.bulk_update(existing, ['colour'])

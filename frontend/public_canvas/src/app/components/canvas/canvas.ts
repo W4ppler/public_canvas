@@ -53,38 +53,44 @@ export class Canvas implements AfterViewInit {
 
     this.resizeCanvas();
 
-    for (const pixel of initialData) {
+    for (let pixel of initialData) {
+      pixel = {
+        ... pixel,
+        thiccness: 1,
+      }
+
       this.drawPixel(pixel);
     }
     this.socket$.subscribe({
       next: (message) => {
+        console.log("Received message:", message);
         this.drawPixel(message as Pixel);
       },
-      error: (err) => console.error('WebSocket error:', err),
-      complete: () => console.log('WebSocket connection closed')
+      error: (err) => alert('WebSocket error:' + JSON.stringify(err)),
+      complete: () => alert('WebSocket connection closed')
     });
 
 
-    this.canvas.addEventListener('mousedown', (event: MouseEvent) => {
+    this.canvas.addEventListener('mousedown', () => {
       this.isDrawing = true;
-
-      // alert(this.thiccness() + this.colour());
     });
+
 
 
     this.canvas.addEventListener('mousemove', (event: MouseEvent) => {
       if (this.isDrawing) {
         const x = Math.floor(event.offsetX * this.offsetMultiplier);
         const y = Math.floor(event.offsetY * this.offsetMultiplier);
-        let colour = '#ff0000';
+        const pixel = new Pixel(x, y, this.colour(), this.thiccness());
 
-        this.drawPixel(new Pixel(x, y, colour));
+        this.drawPixel(pixel);
 
         this.socket$.next({
           type: 'draw',
-          x: x,
-          y: y,
-          colour: colour,
+          x: pixel.x,
+          y: pixel.y,
+          colour: pixel.colour,
+          thiccness: this.thiccness(),
         })
       }
     });
@@ -100,7 +106,7 @@ export class Canvas implements AfterViewInit {
 
   private drawPixel(pixel: Pixel) {
     this.ctx.fillStyle = pixel.colour;
-    this.ctx.fillRect(pixel.x, pixel.y, 1, 1);
+    this.ctx.fillRect(pixel.x, pixel.y, pixel.thiccness, pixel.thiccness);
 
   }
 
