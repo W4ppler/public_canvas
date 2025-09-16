@@ -17,8 +17,6 @@ class CanvasConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         data = json.loads(text_data)
 
-        print(data)
-
         if(data['type'] == 'draw'):
             x = data['x']
             y = data['y']

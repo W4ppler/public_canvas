@@ -63,7 +63,6 @@ export class Canvas implements AfterViewInit {
     }
     this.socket$.subscribe({
       next: (message) => {
-        console.log("Received message:", message);
         this.drawPixel(message as Pixel);
       },
       error: (err) => alert('WebSocket error:' + JSON.stringify(err)),

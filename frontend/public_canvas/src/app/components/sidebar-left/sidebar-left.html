@@ -18,7 +18,7 @@
 
   <mat-menu #THICC="matMenu" yPosition="below" xPosition="after" class="w-min h-min">
     <div class="bg-slate-800 text-gray-100 rounded-lg shadow-lg min-h-24 min-w-40 pt-7 flex justify-center items-center">
-      <mat-slider min="1" max="20" step="1" showTickMarks discrete [displayWith]="displayThiccness">
+      <mat-slider min="1" max="10" step="1" showTickMarks discrete [displayWith]="displayThiccness">
         <input matSliderThumb [(ngModel)]="thiccness">
       </mat-slider>
     </div>
