@@ -32,17 +32,20 @@ class CanvasConsumer(AsyncWebsocketConsumer):
                     'y': y,
                     'colour': colour,
                     'thiccness': thiccness,
+                    'sender_channel_name': self.channel_name,
                 }
-        )
+            )
 
     async def canvas_update(self, event):
+        if event.get('sender_channel_name') == self.channel_name:
+            return
+
         message = {
             'x': event['x'],
             'y': event['y'],
             'colour': event['colour'],
             'thiccness': event['thiccness'],
         }
-
         await self.send(text_data=json.dumps(message))
 
     @database_sync_to_async
