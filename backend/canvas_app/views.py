@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView
-from .models import Pixels
-from .serializers import CanvasModelSerializer
+from .models import PixelChunks
+from .serializers import PixelChunkSerializer
 
 # Create your views here.
-class GetCurrentCanvas(ListAPIView):
-    serializer_class = CanvasModelSerializer
+class GetInitialCanvasChunks(ListAPIView):
+    serializer_class = PixelChunkSerializer
 
     def get_queryset(self):
-        return Pixels.objects.all()
+        return PixelChunks.objects.all().order_by('chunk_y', 'chunk_x')

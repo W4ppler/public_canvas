@@ -1,9 +1,9 @@
 from django.urls import path
-from .views import GetCurrentCanvas
+from .views import GetInitialCanvasChunks
 from . import consumers
 
 urlpatterns = [
-    path('canvas/', GetCurrentCanvas.as_view(), name='get_current_canvas'),
+    path('canvas/', GetInitialCanvasChunks.as_view(), name='get_current_canvas'),
 ]
 
 websocket_urlpatterns = [

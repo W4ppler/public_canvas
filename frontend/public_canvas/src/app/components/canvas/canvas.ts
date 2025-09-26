@@ -11,8 +11,10 @@ import {
   WritableSignal
 } from '@angular/core';
 import {Pixel} from './pixel';
+import {PixelChunk} from './pixelchunk';
 import {firstValueFrom} from 'rxjs';
 import {webSocket} from 'rxjs/webSocket';
+import {initializeAutocomplete} from '@angular/cli/src/utilities/completion';
 
 @Component({
   selector: 'app-canvas',
@@ -36,6 +38,7 @@ export class Canvas implements AfterViewInit {
   private isDrawing = false;
   private ctx!: CanvasRenderingContext2D;
   private offsetMultiplier = 0.1;
+  private CHUNK_SIZE = 50;
 
   // websockets
   private wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
@@ -44,23 +47,27 @@ export class Canvas implements AfterViewInit {
 
 
   async ngAfterViewInit() {
-    const initialData = await firstValueFrom(this.http.get('/api/canvas/', {headers: {'Accept': 'application/json'}})) as Pixel[];
+    const initialChunks = await firstValueFrom(this.http.get('/api/canvas/', {headers: {'Accept': 'application/json'}})) as PixelChunk[];
 
     this.isLoaded = true;
     this.cdr.detectChanges();
     this.canvas = this.canvasElement.nativeElement;
     this.ctx = this.canvas.getContext('2d')!;
 
+    for (const chunk of initialChunks) {
+      const data = chunk.data
+      for (let i = 0; i < data.length; i += 6) {
+        const x = (chunk.chunk_x * this.CHUNK_SIZE) + ((i / 6) % this.CHUNK_SIZE);
+        const y = (chunk.chunk_y * this.CHUNK_SIZE) + Math.floor((i / 6) / this.CHUNK_SIZE);
+        const colour = data.slice(i, i + 6);
+        this.drawPixel(new Pixel(x, y, '#' + colour, 1));
+      }
+    }
+
+
     this.resizeCanvas();
 
-    for (let pixel of initialData) {
-      pixel = {
-        ... pixel,
-        thiccness: 1,
-      }
 
-      this.drawPixel(pixel);
-    }
     this.socket$.subscribe({
       next: (message) => {
         this.drawPixel(message as Pixel);
@@ -73,7 +80,6 @@ export class Canvas implements AfterViewInit {
     this.canvas.addEventListener('mousedown', () => {
       this.isDrawing = true;
     });
-
 
 
     this.canvas.addEventListener('mousemove', (event: MouseEvent) => {

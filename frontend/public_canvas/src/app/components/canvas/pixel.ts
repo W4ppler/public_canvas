@@ -1,6 +1,6 @@
 export class Pixel {
   x: number;
-  y: number
+  y: number;
   colour: string;
   thiccness: number;
 

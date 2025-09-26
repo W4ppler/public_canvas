@@ -1,7 +1,13 @@
 from rest_framework import serializers
-from .models import Pixels
+from .models import PixelChunks
+import base64
 
-class CanvasModelSerializer(serializers.ModelSerializer):
+class PixelChunkSerializer(serializers.ModelSerializer):
+    data = serializers.SerializerMethodField()
+
     class Meta:
-        model = Pixels
-        fields = "__all__"
+        model = PixelChunks
+        fields = ['chunk_x', 'chunk_y', 'data']
+
+    def get_data(self, obj):
+        return obj.data
