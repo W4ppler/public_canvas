@@ -2,6 +2,7 @@ from django.db import migrations
 
 def create_chunks(apps, schema_editor):
     PixelChunks = apps.get_model('canvas_app', 'PixelChunks')
+    PixelChunks.objects.all().delete()
     chunk_size = 50
     width, height = 1000, 500
     for chunk_x in range(width // chunk_size):
