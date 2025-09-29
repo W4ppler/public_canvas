@@ -1,5 +1,5 @@
 # //public:canvas
-This project was created in contribution to the [summer of making](https://summer.hackclub.com). It was planned to result in a Website that offers ppl to draw on a canvas together (like r/place). 
+This project was created in contribution to the [summer of making](https://summer.hackclub.com). It was planned to result in a Website that offers ppl to draw on a canvas together (like r/place). Live Demo is available at [public-canvas.hofmarcher.org](public-canvas.hofmarcher.org). 
 
 ## Used tech
 - Django 5.2.6
